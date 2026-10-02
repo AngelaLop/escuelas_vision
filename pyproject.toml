@@ -1,0 +1,25 @@
+[project]
+name = "escuelas-vision"
+version = "0.1.0"
+description = "Condicion de la infraestructura escolar a partir de la foto de campo"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=2.1",
+    "pyarrow>=15",
+    "scikit-learn>=1.4",
+    "requests>=2.31",
+    "pillow>=10",
+    "mlflow>=2.14",
+]
+
+[dependency-groups]
+# El modelo de vision llega en la fase 3. Se instala aparte porque torch pesa
+# cerca de 200 MB y no hace falta para armar la base ni para la linea base.
+vision = [
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "timm>=1.0",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,19 @@
+# Datos: nada de esto va al repositorio. Todo es redescargable con los scripts.
+data/
+mlruns/
+mlartifacts/
+*.parquet
+*.jpg
+*.jpeg
+*.png
+
+# Entorno
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Credenciales
+.env
+*.pem
+.aws/

@@ -1,0 +1,21 @@
+fuente: C:\Users\lopez\github\IDB\school_infrastructure\results\fotos_usables.csv
+fotos en la fuente: 37,347
+excluidas por decir solo 'Otro': 1,381
+
+fotos utilizables: 35,966
+sedes: 12,982   municipios: 754
+peso si se descargaran todas: 35.8 GB
+
+particion (fotos / sedes / municipios / % techo malo):
+  entrenamiento   24,669   8,908   534   77.4%
+  prueba           6,047   2,184   119   77.4%
+  validacion       5,250   1,890   120   83.6%
+
+condiciones declaradas (share de fotos):
+  buen_estado  21.7%
+  agrietado    59.4%
+  humedad      49.5%
+  derruido     24.0%
+
+control: ningun municipio puede estar en dos particiones
+  municipios en mas de una particion: 0
