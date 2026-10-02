@@ -1,66 +1,15 @@
-# Condición del techo escolar desde la foto de campo
+# Reading school roof condition from field photos
 
-¿Puede un modelo de visión leer en una foto de fachada lo que un rector declaró
-sobre el techo de su escuela?
+Can a vision model read, in a field photo of a school, the roof condition its principal reported?
 
-De las 52.823 sedes oficiales del país solo 15.244 fueron visitadas por la
-encuesta del FFIE. El proyecto hermano `school_infrastructure` mostró que la
-imagen satelital no distingue una sede en ruina de una en buen estado: el estado
-de una escuela no se ve desde arriba. Lo que queda por probar es la foto de
-campo, que sí mira la fachada de frente. Este repositorio es ese experimento, y
-a la vez el ejercicio de llevarlo al ciclo completo de producción: registro de
-experimentos, versiones del modelo, servicio, monitoreo y reentrenamiento.
+## TL;DR
 
-## Qué hay y qué no
+Colombia has little reliable information on the physical condition of its public schools: of 52,823 official school sites, only 15,244 were covered by the national infrastructure survey (FFIE, 2021–22), and full censuses are expensive. This repository tests whether a vision model can read, from a field photo of a school's façade, the roof condition its principal reported in that survey. It uses 35,966 labelled field photos from the FFIE archive, validates by municipality to rule out leakage, and compares a simple image-statistics baseline against a pretrained vision model. The project is at the feasibility stage: data and splits are done, models are not yet trained.
 
-**Los datos** salen de `school_infrastructure`: 37.347 fotos que pasaron un
-triaje de resolución y compresión, sobre 13.475 sedes. Ninguna foto vive en este
-repositorio, todas se redescargan con el script 02.
+## Why this matters
 
-**La etiqueta** es lo que declaró el rector en la encuesta del FFIE entre
-noviembre de 2021 y febrero de 2022, en un campo de texto que concatena
-condiciones: "Agrietados Con exceso de humedad". No es una medición de
-ingeniería y viene sesgada hacia el daño, cerca de 75 a 25. El script 01 la
-descompone en tres condiciones (agrietado, humedad, derruido) más la binaria
-`techo_malo` que ya usaba el proyecto hermano.
+Knowing which schools are in poor physical condition decides where reconstruction and maintenance money goes, but Colombia mostly does not know. The 2021–22 FFIE survey reached 15,244 of 52,823 official sites. A new national round ran from April to June 2026, aimed at more than 48,000 sites, but its responses are not public. It also predates the August 2026 earthquake, so for the schools that were shaken it describes their condition before the event.
 
-**Lo que este proyecto no afirma.** Que una foto diga "techo malo" no significa
-que el edificio esté en mal estado. Significa que la foto se parece a las fotos
-de sedes cuyo rector declaró daño. La escala ordinal de verdad, al estilo de Yao
-et al. (ISVC 2025), hay que anotarla a mano y todavía no existe.
+The gap shows up when it matters most. After the M 7.4 earthquake in Chocó on 10 August 2026, 4,350 school sites with 963,176 students were exposed to shaking of intensity VI or higher, and 2,779 of them (63.9%) had never been surveyed. The same blind spot limits planning for climate adaptation and for bringing schools up to current safety and sustainability standards, in Colombia and across Latin America.
 
-## La regla que no se negocia
-
-**Toda validación agrupa por municipio.** En `school_infrastructure` se midió que
-los metadatos técnicos de la foto (peso, dimensiones, compresión) predicen el
-techo declarado con AUC 0,514 en partición aleatoria y 0,499 agrupando por
-municipio. Esa diferencia es la firma del encuestador, que fotografió varias
-sedes vecinas con la misma cámara. Con partición aleatoria el desempeño sale
-inflado y el modelo puede estar reconociendo la cámara en vez de la cubierta.
-
-## Empezar
-
-Se necesita [uv](https://docs.astral.sh/uv/).
-
-```bash
-uv run python scripts/01_dataset.py              # base y partición por municipio
-uv run python scripts/02_descargar_fotos.py --sedes 1200
-```
-
-El script 01 espera encontrar el repositorio hermano en `../IDB/school_infrastructure`.
-Si está en otra ruta, se pasa con `--fuente`.
-
-## Estructura
-
-```
-data/raw/fotos/      las fotos descargadas, fuera de control de versiones
-data/derived/        base de fotos con etiquetas y partición, manifiesto de descarga
-scripts/             01 en adelante, en orden de ejecución
-results/perfilado/   el registro en texto de lo que encontró cada script
-docs/                decisiones y evidencia
-```
-
-## Fuentes
-
-FFIE (encuesta de infraestructura y archivo fotográfico), vía el proyecto
-`school_infrastructure`.
+Remote data does not close it. In the sibling project `school_infrastructure`, five external sources (municipal poverty, climate, cadastre, historical investment and satellite building footprints) predicted a school's *size* well but not its *condition*: reported roof damage reached an AUC of only 0.582. A school's state cannot be seen from above. Field photos look at the building up close, which makes them the next thing to test. If they work, the same approach could extend to street-level imagery and to other countries in the region.
